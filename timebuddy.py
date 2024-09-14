@@ -199,7 +199,7 @@ class TimeStudyApp:
         self.root.after(100, step.name_entry.focus_set)
 
     def select_step(self, step):
-        if self.current_step:
+        if self.current_step and self.current_step.frame.winfo_exists():
             self.current_step.frame.config(bg=self.root.cget("bg"))
         self.current_step = step
         self.current_step.frame.config(bg="lightblue")
