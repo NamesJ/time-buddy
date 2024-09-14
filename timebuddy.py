@@ -5,10 +5,11 @@ import time
 import threading
 
 class Step:
-    def __init__(self, parent, label):
+    def __init__(self, parent, label, delete_cb=None):
         self.frame = tk.Frame(parent)
         self.frame.grid_columnconfigure(1, weight=1)
         self.label = label
+        self.delete_cb = delete_cb
 
         self.time = 0
         self.running = False
@@ -72,6 +73,7 @@ class Step:
         self.time_display.config(text=self.format_time(self.time))
 
     def delete_step(self):
+        self.delete_cb(self)
         self.frame.destroy()
 
 class TimeStudyApp:
@@ -126,6 +128,10 @@ class TimeStudyApp:
         self.root.bind("<Control-q>", self.toggle_autosave)
         # Bindings for resetting interface (i.e. starting a new time study)
         self.root.bind("<Control-n>", self.reset_interface)
+        # Bindings for File Menu
+        self.root.bind("<Control-o>", self.open_file)
+        self.root.bind("<Control-s>", self.save_file)
+        self.root.bind("<Control-Shift-s>", self.save_as_file)
 
     def set_icon(self, icon_file):
         """Set the window icon using a PNG image"""
@@ -184,7 +190,7 @@ class TimeStudyApp:
             self.add_step()
 
     def add_step(self, event=None):
-        step = Step(self.steps_frame, label="")
+        step = Step(self.steps_frame, label="", delete_cb=self.remove_step)
         step.frame.pack(fill=tk.X, padx=5, pady=2)
         # Step is selected when name entry gains focus
         step.name_entry.bind("<FocusIn>", lambda e, s=step: self.select_step(s))
@@ -195,6 +201,9 @@ class TimeStudyApp:
         step.name_entry.focus_set()
         # Delay setting focus to ensure the widget is fully displayed first
         self.root.after(100, step.name_entry.focus_set)
+        
+    def remove_step(self, step):
+        self.step_widgets.remove(step)
 
     def select_step(self, step):
         if self.current_step and self.current_step.frame.winfo_exists():
@@ -256,12 +265,14 @@ class TimeStudyApp:
                     print(ex)
 
     def save_file(self, event=None):
+        print('save_file')
         if not hasattr(self, 'current_file'):
             self.save_as_file()
         else:
             self.save_to_file(self.current_file)
 
     def save_as_file(self, event=None):
+        print('save_as_file')
         file = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
         if file:
             self.current_file = file
