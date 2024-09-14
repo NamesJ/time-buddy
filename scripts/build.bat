@@ -2,8 +2,7 @@
 REM Default PyInstaller options
 set OPTIONS=--onefile ^
 --name="TimeBuddy" ^
---icon="resources/app_icon.png" ^
---add-data="resources/*;resources" ^
+REM --add-data="resources/app_icon.png;resources"
 --clean
 
 REM First to this script determins whether `--noconsole`

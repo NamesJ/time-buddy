@@ -79,7 +79,7 @@ class TimeStudyApp:
         self.root = root
         self.root.title("Time Study")
         
-        self.set_icon('resources/app_icon.png')
+        #self.set_icon('resources/app_icon.png')
 
         # Initialize window dimensions relative to screen
         screen_width = self.root.winfo_screenwidth()
