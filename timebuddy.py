@@ -114,10 +114,8 @@ class TimeStudyApp:
         # Binding for adding a new step
         self.root.bind("<Alt-n>", self.add_step)
         # Bindings for selecting previous step
-        self.root.bind("<Left>", self.previous_step)
         self.root.bind("<Up>", self.previous_step)
         # Bindings for selecting next step
-        self.root.bind("<Right>", self.next_step)
         self.root.bind("<Down>", self.next_step)
         # Bindings for pausing/resuming current step's timer
         self.root.bind("<Return>", self.toggle_current_timer)
