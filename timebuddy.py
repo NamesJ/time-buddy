@@ -168,13 +168,23 @@ class TimeStudyApp:
 
     def show_shortcuts(self, event=None):
         shortcuts = (
-            "Add step: Tab or Alt+N\n"
-            "Previous step: Left Arrow key or Up Arrow key\n"
-            "Next step: Right Arrow key or Down Arrow key\n"
+            "NAVIGATION\n"
+            "Previous step: Up Arrow key\n"
+            "Next step: Down Arrow key or Tab (adds new step if no next step)\n"
+            "\n"
+            "CURRENT (HIGHLIGHTED) TIMER\n"
             "Pause/Resume current timer: Return or Ctrl+Return\n"
             "Reset current timer: Ctrl+R\n"
+            "\n"
+            "MAIN INTERFACE\n"
+            "New time study / reset interface: Ctrl+N\n"
+            "Add step: Alt+N or Tab (adds new step if no next step)\n"
             "Toggle autosave: Ctrl+Q\n"
-            "New time study / reset interface: Ctrl+N"
+            "\n"
+            "FILE MENU\n"
+            "Open file: Ctrl+O\n"
+            "Save file: Ctrl+S\n"
+            "Save file As: Ctrl+Shift+S\n"
         )
         
         messagebox.showinfo("Keyboard Shortcuts", shortcuts)
