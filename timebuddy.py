@@ -39,6 +39,9 @@ class Step:
         self.time_display.grid(row=0, column=2, padx=2, pady=2)
 
         self.pause_resume_button = tk.Button(self.frame, text='Resume', command=self.toggle_timer)
+        # Configure width of pause/resume button based on "Resume" char width so that it doesn't shrink
+        btn_font = font.nametofont(self.pause_resume_button.cget('font'))
+        self.pause_resume_button.config(width=approximate_char_width(btn_font, 'Resume'))
         self.pause_resume_button.grid(row=0, column=3, padx=2, pady=2, sticky='e')
 
         self.reset_button = tk.Button(self.frame, text='Reset', command=self.reset_timer)
