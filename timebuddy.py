@@ -1,8 +1,18 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
+from tkinter import font
 import csv
 import time
 import threading
+
+
+def approximate_char_width(font, string, approx_char='0'):
+    # Pixel width of string in the provided font
+    string_px_width = font.measure(string)
+    # Using '0' to approximate 1 char in font
+    approx_char_px_width = font.measure(approx_char)
+    # Get approximate char width in font with 
+    return int(string_px_width / approx_char_px_width)
 
 class Step:
     def __init__(self, parent, label, delete_cb=None):
@@ -29,6 +39,9 @@ class Step:
         self.time_display.grid(row=0, column=2, padx=2, pady=2)
 
         self.pause_resume_button = tk.Button(self.frame, text='Resume', command=self.toggle_timer)
+        # Configure width of pause/resume button based on "Resume" char width so that it doesn't shrink
+        btn_font = font.nametofont(self.pause_resume_button.cget('font'))
+        self.pause_resume_button.config(width=approximate_char_width(btn_font, 'Resume'))
         self.pause_resume_button.grid(row=0, column=3, padx=2, pady=2, sticky='e')
 
         self.reset_button = tk.Button(self.frame, text='Reset', command=self.reset_timer)
@@ -56,7 +69,7 @@ class Step:
         self.running = True
         self.start_time = time.time()
         self.update_time()
-        self.pause_resume_button.config(text='Pause')
+        self.pause_resume_button.config(text='  Pause  ')
 
     def pause_timer(self):
         self.running = False
@@ -204,6 +217,10 @@ class TimeStudyApp:
         step.frame.pack(fill=tk.X, padx=5, pady=2)
         # Step is selected when name entry gains focus
         step.name_entry.bind("<FocusIn>", lambda e, s=step: self.select_step(s))
+        # Step is selected when pause/resume button pressed
+        step.pause_resume_button.bind('<Button-1>', lambda e, s=step: self.select_step(s))
+        # Step is selected when reset button pressed
+        step.reset_button.bind('<Button-1>', lambda e, s=step: self.select_step(s))
         self.step_widgets.append(step)
         # Always select a step if it was just added
         self.select_step(step)
