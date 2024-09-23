@@ -1,8 +1,18 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
+from tkinter import font
 import csv
 import time
 import threading
+
+
+def approximate_char_width(font, string, approx_char='0'):
+    # Pixel width of string in the provided font
+    string_px_width = font.measure(string)
+    # Using '0' to approximate 1 char in font
+    approx_char_px_width = font.measure(approx_char)
+    # Get approximate char width in font with 
+    return int(string_px_width / approx_char_px_width)
 
 class Step:
     def __init__(self, parent, label, delete_cb=None):
@@ -56,7 +66,7 @@ class Step:
         self.running = True
         self.start_time = time.time()
         self.update_time()
-        self.pause_resume_button.config(text='Pause')
+        self.pause_resume_button.config(text='  Pause  ')
 
     def pause_timer(self):
         self.running = False
