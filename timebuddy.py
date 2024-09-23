@@ -194,6 +194,10 @@ class TimeStudyApp:
         step.frame.pack(fill=tk.X, padx=5, pady=2)
         # Step is selected when name entry gains focus
         step.name_entry.bind("<FocusIn>", lambda e, s=step: self.select_step(s))
+        # Step is selected when pause/resume button pressed
+        step.pause_resume_button.bind('<Button-1>', lambda e, s=step: self.select_step(s))
+        # Step is selected when reset button pressed
+        step.reset_button.bind('<Button-1>', lambda e, s=step: self.select_step(s))
         self.step_widgets.append(step)
         # Always select a step if it was just added
         self.select_step(step)
