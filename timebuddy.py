@@ -130,8 +130,16 @@ class TimeStudyApp:
         self.root.bind("<Alt-n>", self.add_step)
         # Bindings for selecting previous step
         self.root.bind("<Up>", self.previous_step)
+        # Binding for selecting previous step, but pause current step before moving
+        self.root.bind("<Control-Up>", self.pause_then_previous_step)
         # Bindings for selecting next step
         self.root.bind("<Down>", self.next_step)
+        # Binding for selecting next step, but pause current step before moving
+        self.root.bind("<Control-Down>", self.pause_then_next_step)
+        # Bind for selecting first step
+        self.root.bind("<Control-Home>", self.select_first_step)
+        # Bind for selecting last step
+        self.root.bind("<Control-End>", self.select_last_step)
         # Bindings for pausing/resuming current step's timer
         self.root.bind("<Return>", self.toggle_current_timer)
         self.root.bind("<Control-Return>", self.toggle_current_timer)
@@ -183,7 +191,12 @@ class TimeStudyApp:
         shortcuts = (
             "NAVIGATION\n"
             "Previous step: Up Arrow key\n"
-            "Next step: Down Arrow key or Tab (adds new step if no next step)\n"
+            "Previous step (pause current step, then move): Ctrl + Up Arrow key\n"
+            "Next step: Down Arrow key\n"
+            "Next step (pause current step, then move): Ctrl + Down Arrow key\n"
+            "Next step (add new step if last, pause current before moving): Tab\n"
+            "First step: Ctrl+Home\n"
+            "Last step: Ctrl+End\n"
             "\n"
             "CURRENT (HIGHLIGHTED) TIMER\n"
             "Pause/Resume current timer: Return or Ctrl+Return\n"
@@ -203,14 +216,19 @@ class TimeStudyApp:
         messagebox.showinfo("Keyboard Shortcuts", shortcuts)
 
     def tab_step(self, event=None):
-        if self.current_step:
-            index = self.step_widgets.index(self.current_step)
-            if index < len(self.step_widgets) - 1:
-                self.select_step(self.step_widgets[index + 1])
-            else:
-                self.add_step()
+        if not self.current_step:
+            self.add_step()
+            return
+        
+        # Regardless of next/new, current step should always be paused first
+        self.current_step.pause_timer()
+        
+        index = self.step_widgets.index(self.current_step)
+        if index < len(self.step_widgets) - 1:
+            self.select_step(self.step_widgets[index + 1])
         else:
             self.add_step()
+            return        
 
     def add_step(self, event=None):
         step = Step(self.steps_frame, label="", delete_cb=self.remove_step)
@@ -241,17 +259,33 @@ class TimeStudyApp:
 
     def previous_step(self, event=None):
         if self.current_step:
-            self.current_step.pause_timer()
             index = self.step_widgets.index(self.current_step)
             if index > 0:
                 self.select_step(self.step_widgets[index - 1])
 
     def next_step(self, event=None):
         if self.current_step:
-            self.current_step.pause_timer()
             index = self.step_widgets.index(self.current_step)
             if index < len(self.step_widgets) - 1:
                 self.select_step(self.step_widgets[index + 1])
+
+    def pause_then_previous_step(self, event=None):
+        if self.current_step:
+            self.current_step.pause_timer()
+            self.previous_step()
+
+    def pause_then_next_step(self, event=None):
+        if self.current_step:
+            self.current_step.pause_timer()
+            self.next_step()
+    
+    def select_first_step(self, event=None):
+        if self.step_widgets:
+            self.select_step(self.step_widgets[0])
+    
+    def select_last_step(self, event=None):
+        if self.step_widgets:
+            self.select_step(self.step_widgets[-1])
 
     def toggle_current_timer(self, event=None):
         if self.current_step:
